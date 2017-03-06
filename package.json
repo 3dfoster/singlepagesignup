@@ -1,0 +1,19 @@
+{
+  "name": "singlepagesignup",
+  "version": "0.1.0",
+  "description": "A simple HTML5 single page signup form to gather emails for your next big idea",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "none"
+  },
+  "author": "David Foster",
+  "license": "ISC",
+  "dependencies": {
+    "nano": "^6.2.0"
+  }
+}
