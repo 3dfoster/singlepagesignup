@@ -33,8 +33,8 @@
         httpRequest.open('POST', '/')
         // Setting request header is required
         httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded")
-        // Send JSON object to server
-        httpRequest.send('email=' + email)
+        // Send email to server
+        httpRequest.send(email)
       }
     </script>
     <style type="text/css">
