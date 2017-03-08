@@ -1,16 +1,16 @@
 let mongoose = require('mongoose')
-let http = require('http')
-let fs = require('fs')
+var http = require('http')
+var fs = require('fs')
 
-let server = http.createServer()
-let page = fs.readFileSync('index.html')
+var server = http.createServer()
+var page = fs.readFileSync('index.html')
 
 // Define the document schema for Mongoose
-let Schema = mongoose.Schema
-let emailSchema = new Schema({
+var Schema = mongoose.Schema
+var emailSchema = new Schema({
   email: String
 })
-let Email = mongoose.model('Email', emailSchema)
+var Email = mongoose.model('Email', emailSchema)
 
 /*
 Our server object is an EventEmitter
@@ -18,8 +18,8 @@ When it receives an HTTP request it emits a 'request' event
 When this event occurs we perform the following code
 */
 server.on('request', (req, res) => {
-  let userAgent = req.headers['user-agent']
-  let body = []
+  var userAgent = req.headers['user-agent']
+  var body = []
 
   // Logging errors to console allows our server to continue running if an error is received
   req.on('error', () => {
@@ -31,7 +31,7 @@ server.on('request', (req, res) => {
     // The body of a POST request
     body = Buffer.concat(body).toString()
 
-    // Router
+    // GET Router
     if (req.method == 'GET') {
       switch (req.url) {
         case '/':
@@ -51,24 +51,30 @@ server.on('request', (req, res) => {
       }
     }
 
+    // POST Router
     if (req.method == 'POST') {
       switch (req.url) {
         case '/':
           // Create a new mongoose model with the email our user submitted 
-          let email = new Email({ email: body })
+          var email = new Email({ email: body })
 
           // Connect to MongoDB
           mongoose.connect('mongodb://localhost/test')
-          let db = mongoose.connection
+          var db = mongoose.connection
           db.on('error', console.error.bind(console, 'connection error:'))
           db.once('open', function () {
             // We've successfully established a conection to the database
             console.log("Connection to Mongo database established")
 
             // Store our user's email in the database
-            email.save()
-            res.writeHead(200, { 'Content-Type': 'text/plain' })
-            res.end("Thanks for your interest in our product! You will receive an email once it is finished")
+            email.save( (err, email) => {
+              if (err) {
+                return console.error(err)
+                res.end("There was an error connecting to our database :(")
+              }
+              res.writeHead(200, { 'Content-Type': 'text/plain' })
+              res.end("Thanks for your interest in our product! You will receive an email once it is finished")
+            })
           })
           break
       }
@@ -76,7 +82,7 @@ server.on('request', (req, res) => {
 
               // Connect to MongoDB
           // mongoose.connect('mongodb://localhost/test')
-          // let db = mongoose.connection
+          // var db = mongoose.connection
           // db.on('error', console.error.bind(console, 'connection error:'))
           // db.once('open', function () {
           //   Email.find((err, emails) => {
@@ -88,11 +94,11 @@ server.on('request', (req, res) => {
 
     // if (req.method == 'POST' && req.url == '/') {
     //   // Create a new mongoose model with the email our user submitted 
-    //   let email = new Email({ email: body })
+    //   var email = new Email({ email: body })
 
     //   // Connect to MongoDB
     //   mongoose.connect('mongodb://localhost/test')
-    //   let db = mongoose.connection
+    //   var db = mongoose.connection
     //   db.on('error', console.error.bind(console, 'connection error:'))
     //   db.once('open', function() {
     //     // We've successfully established a conection to the database
