@@ -1,4 +1,4 @@
-let mongoose = require('mongoose')
+var mongoose = require('mongoose')
 var http = require('http')
 var fs = require('fs')
 
@@ -56,6 +56,7 @@ server.on('request', (req, res) => {
             Email.find((err, emails) => {
               if (err) return console.error(err)
 
+              res.write(page)
               res.end(JSON.stringify(emails))
               mongoose.disconnect()
             })
